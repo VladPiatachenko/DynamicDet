@@ -20,6 +20,7 @@ import torch.optim.lr_scheduler as lr_scheduler
 from torch.cuda import amp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
+from tensorboardX import SummaryWriter
 
 import test  # import test.py to get mAP after each epoch
 from models.yolo import Model
@@ -575,7 +576,7 @@ if __name__ == '__main__':
 
     # DDP mode
     opt.total_batch_size = opt.batch_size
-    device = select_device(opt.device, batch_size=opt.batch_size)
+    device = torch.device("cpu") if opt.device == "cpu" else select_device(opt.device, batch_size=opt.batch_size)
     if opt.local_rank != -1:
         assert torch.cuda.device_count() > opt.local_rank
         torch.cuda.set_device(opt.local_rank)
